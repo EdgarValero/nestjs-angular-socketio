@@ -1,0 +1,160 @@
+<div class="flex justify-between p-4">
+  <h1>
+    <img
+      src="https://play-lh.googleusercontent.com/pjUulZ-Vdo7qPKxk3IRhnk8SORPlgSydSyYEjm7fGcoXO8wDyYisWXwQqEjMryZ_sqK2"
+      class="inline"
+      alt="Logo"
+      width="50"
+    />
+    <span class="ml-3 inline-block align-middle text-3xl">TaskUp</span>
+  </h1>
+  <a href="https://socket.io/" class="text-white" target="_blank">
+    <img
+      src="https://socket.io/images/logo.svg"
+      class="inline"
+      alt="Socker.IO logo"
+      width="50"
+    />
+    <span class="ml-3 inline-block align-middle">Socket.io</span>
+  </a>
+</div>
+
+<div class="grid grid-cols-3 gap-4 container mx-auto">
+  <div
+    class="bg-white p-6 rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
+  >
+    <form (ngSubmit)="sendTask()">
+      <div class="mb-6">
+        <label
+          for="title"
+          class="block mb-2 font-medium text-gray-900 dark:text-gray-300"
+          >Title</label
+        >
+        <input
+          type="text"
+          [(ngModel)]="task.title"
+          name="title"
+          class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          required
+        />
+      </div>
+      <div class="mb-6">
+        <label
+          for="description"
+          class="block mb-2 font-medium text-gray-900 dark:text-gray-300"
+          >Description</label
+        >
+        <textarea
+          [(ngModel)]="task.description"
+          name="description"
+          class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 max-h-28"
+          required
+        ></textarea>
+      </div>
+
+      <div class="mb-6" *ngIf="task._id">
+        <label
+          for="default-toggle"
+          class="inline-flex relative items-center cursor-pointer"
+        >
+          <input
+            type="checkbox"
+            [checked]="task.isCompleted"
+            (change)="onChangeToggle($event)"
+            id="default-toggle"
+            class="sr-only peer"
+          />
+          <div
+            class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
+          ></div>
+          <span
+            class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300"
+            >Completed</span
+          >
+        </label>
+      </div>
+
+      <button
+        type="submit"
+        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        [disabled]="!task.title || !task.description"
+      >
+        Submit
+      </button>
+      <button
+        *ngIf="task._id"
+        type="button"
+        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg w-full sm:w-auto px-5 py-2.5 ml-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        (click)="clearForm()"
+      >
+        Cancel
+      </button>
+    </form>
+  </div>
+
+  <table
+    *ngIf="tasks.length; else elseTable"
+    class="col-span-2 text-left text-gray-500 dark:text-gray-400"
+  >
+    <thead
+      class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+    >
+      <tr>
+        <th scope="col" class="py-3 px-6">Title</th>
+        <th scope="col" class="py-3 px-6">Description</th>
+        <th scope="col" class="py-3 px-6">Status</th>
+        <th scope="col" class="py-3 px-6">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let task of tasks"
+        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+      >
+        <th
+          scope="row"
+          class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+        >
+          {{ task.title }}
+        </th>
+        <td class="py-4 px-6">{{ task.description }}</td>
+        <td class="py-4 px-6">
+          <span
+            *ngIf="task.isCompleted; else elseBlock"
+            class="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900"
+            >Completed</span
+          >
+          <ng-template #elseBlock>
+            <span
+              class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-900"
+              >ToDo</span
+            >
+          </ng-template>
+        </td>
+        <td class="py-4 px-6">
+          <button
+            type="button"
+            class="text-white bg-red-700 hover:bg-blue-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 ml-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none"
+            (click)="deleteTask(task._id)"
+          >
+            Delete
+          </button>
+          <button
+            type="button"
+            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 ml-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none"
+            (click)="setTaskToUpdate(task)"
+          >
+            Edit
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <ng-template #elseTable>
+    <div class="col-span-2">
+      <h2 class="mt-6 text-6xl text-center">Step 1: Create a Task</h2>
+      <h2 class="mt-6 text-6xl text-center">Step 2: Complete a Task</h2>
+      <h2 class="mt-6 text-6xl text-center">Step 3: Delete a Task</h2>
+    </div>
+  </ng-template>
+</div>
